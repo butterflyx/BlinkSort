@@ -16,5 +16,7 @@ Works with either text or markdown input
 
 ## roadmap
 
+- [ ] option to output as JSON
+- [ ] option to output as Markdown
 - [ ] use webscraper
 
