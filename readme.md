@@ -12,7 +12,6 @@ The pupose of this scripts is:
 - remove duplicate headlines
 - reorder the elements chronologically
 
-Works with either text or markdown input
 
 ## roadmap
 
