@@ -45,10 +45,9 @@ class BlinkSort:
         
 
     def set_title(self) -> str:
-        self.title = self.textlist[-1]
+        self.title = self.annotations["booktitle"] = self.textlist[-1]
         self.textlist.pop(-1) # remove the headline so the rest of the text is all the same structure
         log.debug(f"fetched title '{self.title}' from last line. Textlist content is now:\n{self.textlist}")
-        self.annotations["booktitle"] = self.title
         return self.title
 
     def get_title(self) -> str:
@@ -102,5 +101,4 @@ class BlinkSort:
 if __name__ == "__main__":
     inputfile = "./data/demo.txt"
     blink = BlinkSort(inputfile)
-    blink.get_annotations()
     print(blink.output_markdown())
