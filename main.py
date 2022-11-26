@@ -31,7 +31,7 @@ class BlinkSort:
             with open(filename) as fp:
                 intext = fp.read()
                 log.debug(f"fetched file {filename} with content:\n{intext}")
-                if intext == "":
+                if intext == "": # empty file
                     raise EmptyFileError
                 self.textlist = intext.strip().split("\n")
                 self.textlist.reverse() # for chronological order
@@ -65,32 +65,37 @@ class BlinkSort:
                 log.debug(f"chapter found")
                 chapter_index = int(match.group(1))
                 log.debug(f"chapter index is now {chapter_index}")
-                if str(chapter_index) not in self.chapters: # first match sets title
-                    self.chapters[str(chapter_index)] = {"chapter_title" : match.group(2)}
+                if chapter_index not in self.chapters: # first match sets title
+                    self.chapters[chapter_index] = {"chapter_title" : match.group(2)}
                     log.debug(f"chapter title is yet empty so set to '{match.group(2)}'")
             elif chapter_index > 0: # annotation found
                 log.debug(f"annotation found: {line}")
-                if "annotations" not in self.chapters[str(chapter_index)]: # no annotions yet
+                if "annotations" not in self.chapters[chapter_index]: # no annotions yet
                     log.debug(f"no annotions yet, so init key 'annotations' with empty list")
-                    self.chapters[str(chapter_index)]["annotations"] = []
+                    self.chapters[chapter_index]["annotations"] = []
                 log.debug(f"append line to annotations")
-                self.chapters[str(chapter_index)]["annotations"].append(line)
+                self.chapters[chapter_index]["annotations"].append(line)
             else:
                 raise FileStructureMissmatch
         log.debug(f"done finding annotations.\n{self.chapters}")
         log.debug(f"merge found annotations into annotations dict with book title")
         self.annotations["chapters"] = self.chapters
+        log.debug(f"final annotations dict:\n{self.annotations}")
         return self.annotations
     
     def get_annotations(self) -> dict:
         return self.annotations
         
-    def output_markdown(self) -> str:
-        pass
+    def output_markdown(self, cite=True) -> str:
+        mdstr = f"# {self.annotations['booktitle']}\n"
+        for index,chapter in self.annotations['chapters'].items():
+            mdstr += f"\n## Kapitel {index} : {chapter['chapter_title']}\n\n"
+            for annotation in chapter['annotations']:
+                mdstr += f"> {annotation} \n" if cite else f"{annotation} \n"
+        return mdstr
 
     def output_json(self,indent=4) -> str:
-        pretty_j = json.loads(str(self.annotations).replace("\'", "\"").encode('utf8'))
-        return json.dumps(pretty_j, indent=indent, ensure_ascii=False)
+        return json.dumps(self.annotations, indent=indent, ensure_ascii=False)
         
 
 
@@ -98,4 +103,4 @@ if __name__ == "__main__":
     inputfile = "./data/demo.txt"
     blink = BlinkSort(inputfile)
     blink.get_annotations()
-    print(blink.output_json())
+    print(blink.output_markdown())
