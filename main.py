@@ -89,8 +89,7 @@ class BlinkSort:
         pass
 
     def output_json(self,indent=4) -> str:
-        json_data = str(self.annotations).replace("\'", "\"").encode('utf8')
-        pretty_j = json.loads(json_data)
+        pretty_j = json.loads(str(self.annotations).replace("\'", "\"").encode('utf8'))
         return json.dumps(pretty_j, indent=indent, ensure_ascii=False)
         
 
