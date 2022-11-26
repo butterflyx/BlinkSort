@@ -6,7 +6,6 @@ Main script for BlinkSort
 @author: info@butterflyx.com
 """
 
-import os
 import re
 import json
 import logging as log
@@ -32,6 +31,8 @@ class BlinkSort:
             with open(filename) as fp:
                 intext = fp.read()
                 log.debug(f"fetched file {filename} with content:\n{intext}")
+                if intext == "":
+                    raise EmptyFileError
                 self.textlist = intext.strip().split("\n")
                 self.textlist.reverse() # for chronological order
                 log.debug(f"converted intext into list:\n{self.textlist}")
@@ -64,16 +65,16 @@ class BlinkSort:
                 log.debug(f"chapter found")
                 chapter_index = int(match.group(1))
                 log.debug(f"chapter index is now {chapter_index}")
-                if chapter_index not in self.chapters: # first match sets title
-                    self.chapters[chapter_index] = {"chapter_title" : match.group(2)}
+                if str(chapter_index) not in self.chapters: # first match sets title
+                    self.chapters[str(chapter_index)] = {"chapter_title" : match.group(2)}
                     log.debug(f"chapter title is yet empty so set to '{match.group(2)}'")
             elif chapter_index > 0: # annotation found
                 log.debug(f"annotation found: {line}")
-                if "annotations" not in self.chapters[chapter_index]: # no annotions yet
+                if "annotations" not in self.chapters[str(chapter_index)]: # no annotions yet
                     log.debug(f"no annotions yet, so init key 'annotations' with empty list")
-                    self.chapters[chapter_index]["annotations"] = []
+                    self.chapters[str(chapter_index)]["annotations"] = []
                 log.debug(f"append line to annotations")
-                self.chapters[chapter_index]["annotations"].append(line)
+                self.chapters[str(chapter_index)]["annotations"].append(line)
             else:
                 raise FileStructureMissmatch
         log.debug(f"done finding annotations.\n{self.chapters}")
@@ -84,11 +85,18 @@ class BlinkSort:
     def get_annotations(self) -> dict:
         return self.annotations
         
+    def output_markdown(self) -> str:
+        pass
 
+    def output_json(self,indent=4) -> str:
+        json_data = str(self.annotations).replace("\'", "\"").encode('utf8')
+        pretty_j = json.loads(json_data)
+        return json.dumps(pretty_j, indent=indent, ensure_ascii=False)
         
 
 
 if __name__ == "__main__":
     inputfile = "./data/demo.txt"
     blink = BlinkSort(inputfile)
-    print(blink.get_annotations())
+    blink.get_annotations()
+    print(blink.output_json())
