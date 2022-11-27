@@ -8,6 +8,7 @@ Unfortuantely the available sortings are either chronological or by book, with t
 
 This script helps to locally archive the annotations by book and in chronological order.
 
+
 ## Features
 - create either markdown or JSON output
 - remove duplicate headlines
@@ -43,4 +44,6 @@ optional arguments:
 - [x] option to output as Markdown
 - [ ] multi languages
 - [ ] use webscraper
+- [ ] work as well for [Kindle highlights](https://kindle.amazon.com/your_highlights)
+- [ ] opt. write output to file
 
