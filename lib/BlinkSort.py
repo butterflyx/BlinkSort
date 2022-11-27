@@ -16,11 +16,9 @@ class BlinkSort:
     def __init__(self, filename):
         try:
             with open(filename) as fp:
-                intext = fp.read()
-                log.debug(f"fetched file {filename} with content:\n\t-->-\n\t{intext}\n\t-<--\n")
-                if intext == "": # empty file
+                self.textlist = list(filter(None, (line.rstrip() for line in fp))) # https://stackoverflow.com/questions/4842057/easiest-way-to-ignore-blank-lines-when-reading-a-file-in-python
+                if len(self.textlist) == 0: # empty file
                     raise EmptyFileError
-                self.textlist = intext.strip().split("\n")
                 log.debug(f"converted intext into list:\n\t-->-\n\t{self.textlist}\n\t-<--\n")
         except FileNotFoundError as e:
             log.error(f"file {filename} not found: {e}")
