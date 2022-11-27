@@ -21,15 +21,17 @@ class BlinkSort:
                 if intext == "": # empty file
                     raise EmptyFileError
                 self.textlist = intext.strip().split("\n")
-                self.textlist.reverse() # for chronological order
                 log.debug(f"converted intext into list:\n\t-->-\n\t{self.textlist}\n\t-<--\n")
         except FileNotFoundError as e:
             log.error(f"file {filename} not found: {e}")
+        
+        self.prepare_text()
 
+    def prepare_text(self) -> None:
+        self.textlist.reverse() # for chronological order
         self.set_title()
         self.find_annotations()
         
-
     def set_title(self) -> str:
         self.title = self.annotations["booktitle"] = self.textlist[-1]
         self.textlist.pop(-1) # remove the headline so the rest of the text is all the same structure
