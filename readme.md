@@ -1,6 +1,6 @@
 # BlinkSort
 
-Sort annotations made in Blinks from Blinkist.com
+Pretty print annotations made in Blinks from Blinkist.com and Kindle.com
 
 ## Background
 Blinkist is a service which provides blinks for books. Texts can be highlighted in the app and accessed via https://www.blinkist.com/de/nc/highlights 
