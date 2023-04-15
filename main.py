@@ -13,16 +13,27 @@ import logging as log
 
 import lib.BlinkSort as BlinkSort
 
-if __name__ == "__main__":
+def create_parser():
+    output_options = ["JSON", "markdown"] # https://stackoverflow.com/questions/33786176/how-to-use-argparse-to-list-options
 
-    output_options = ["JSON", "markdown"]
+    parser = argparse.ArgumentParser(
+        prog='main',
+        description="Pretty print annotations made in Blinks from Blinkist.com and Kindle.com")
 
-    parser = argparse.ArgumentParser(prog='main')
-    parser.add_argument('-i','--infile', required=True, type=argparse.FileType('r'), default=sys.stdin, help='path to file with raw text')
+    parser.add_argument('-i','--infile', required=True, type=argparse.FileType('r'), metavar='PATH', default=sys.stdin, help='path to file with raw text')
+    parser.add_argument('-o','--outfile', type=argparse.FileType('w'), metavar='PATH', default=sys.stdout, help='Output file (default: standard output)')
     parser.add_argument('-j', '--indent', type=int, help='INDENT chars for JSON output', default=4)
     parser.add_argument('-c','--cite', action='store_true', help='format markdown output as citations')
     parser.add_argument('-v', '--verbose', action='store_true', help='show debugging information')
     parser.add_argument('-f', '--output_format', action='store', required=True, choices=output_options, help="specify output format")
+    
+    return parser
+
+
+
+if __name__ == "__main__":
+
+    parser = create_parser()
     args = parser.parse_args()
 
     log.basicConfig(encoding='utf-8', level=log.DEBUG) if args.verbose else log.basicConfig(encoding='utf-8', level=log.ERROR)
@@ -33,6 +44,8 @@ if __name__ == "__main__":
         blink = BlinkSort.BlinkSort(inputfile.name)
     except FileNotFoundError as e:
         exit(f"File '{inputfile}' not found: {e}")
+
+    
 
     if args.output_format == "markdown":
         log.debug(f"output should be formated as markdown")
