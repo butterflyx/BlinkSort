@@ -21,31 +21,31 @@ def create_parser():
         description="Pretty print annotations made in Blinks from Blinkist.com and Kindle.com")
 
     parser.add_argument('-i','--infile', required=True, type=argparse.FileType('r'), metavar='PATH', default=sys.stdin, help='path to file with raw text')
-    parser.add_argument('-o','--outfile', type=argparse.FileType('w'), metavar='PATH', default=sys.stdout, help='Output file (default: standard output)')
+    parser.add_argument('-o','--outfile', type=argparse.FileType('w'), metavar='PATH', default=sys.stdout, help='Output file (default: standard output)') # do not set dest='output' or it wont work
     parser.add_argument('-j', '--indent', type=int, help='INDENT chars for JSON output', default=4)
     parser.add_argument('-c','--cite', action='store_true', help='format markdown output as citations')
     parser.add_argument('-v', '--verbose', action='store_true', help='show debugging information')
     parser.add_argument('-f', '--output_format', action='store', required=True, choices=output_options, help="specify output format")
     
-    return parser
+    args = parser.parse_args()
+
+    return args
 
 
 
 if __name__ == "__main__":
 
-    parser = create_parser()
-    args = parser.parse_args()
-
+    args = create_parser()
+    
     log.basicConfig(encoding='utf-8', level=log.DEBUG) if args.verbose else log.basicConfig(encoding='utf-8', level=log.ERROR)
 
     inputfile = args.infile
-    log.debug(f"argument given as input (-f): {inputfile}")
+    log.debug(f"argument given as input (-i): {inputfile}")
     try:
         blink = BlinkSort.BlinkSort(inputfile.name)
     except FileNotFoundError as e:
         exit(f"File '{inputfile}' not found: {e}")
 
-    
 
     if args.output_format == "markdown":
         log.debug(f"output should be formated as markdown")
@@ -56,6 +56,13 @@ if __name__ == "__main__":
     else:
         raise ArgumentError
 
-    log.debug(f"done, printing output:")
-    print("-"*20)
-    print(output)
+    log.debug(f"done, processing output")
+
+    if outfile := args.outfile:
+        log.debug(f"argument given as output file (-o): {outfile}")
+        log.debug(f"writing output to outfile")
+        outfile.write(output)
+    else:
+        log.debug(f"printing output to stdout")
+        print("-"*20)
+        print(output)
