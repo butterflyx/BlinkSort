@@ -17,7 +17,7 @@ This script helps to locally archive the annotations by book and in chronologica
 ## How to use:
 1. go to https://www.blinkist.com/de/nc/highlights 
 2. choose "Hinzugefügt am" for sorting
-3. click and drag over the annotations per book, beginning with the title of the book
+3. click and drag over the annotations **per book**, beginning with the title of the book
 4. copy to clipboard `Strg+C`
 5. paste the content to an empty file and safe it relative to the script as *.txt file
 6. run script
@@ -55,8 +55,9 @@ which will output a .md file and remove the original .txt file.
 
 - [x] option to output as JSON
 - [x] option to output as Markdown
+- [ ] works for multiple blinks at once
 - [ ] multi languages
 - [ ] use webscraper
-- [ ] work as well for [Kindle highlights](https://kindle.amazon.com/your_highlights)
+- [ ] works as well for [Kindle highlights](https://kindle.amazon.com/your_highlights)
 - [x] opt. write output to file
 
